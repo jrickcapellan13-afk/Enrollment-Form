@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Registry | Student Administration</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">⌂</div>
+      <strong>Academic Registry</strong>
+      <span class="brand-divider"></span>
+      <span class="muted">Student administration</span>
+    </div>
+    <div class="school-year">▦ <span>Academic year 2026–2027</span></div>
+  </header>
+
+  <main class="app-shell">
+    <nav class="main-nav" aria-label="Main navigation">
+      <button class="nav-link active" data-page="enroll">New enrollment</button>
+      <button class="nav-link" data-page="directory">Student directory</button>
+      <button class="nav-link" data-page="summary">Enrollment summary</button>
+    </nav>
+
+    <section class="page active" id="page-enroll">
+      <div class="page-heading narrow">
+        <div class="breadcrumb">Students <span>›</span> New enrollment</div>
+        <h1>Student enrollment</h1>
+        <p>Create a student record and assign a course and year level.</p>
+      </div>
+
+      <div class="alert alert-error hidden" id="form-alert" role="alert">
+        Unable to enroll. Correct the highlighted fields below.
+      </div>
+
+      <form class="panel form-panel" id="enrollment-form" novalidate>
+        <div class="panel-heading">
+          <strong>Student information</strong>
+          <span class="muted small">All fields are required</span>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="student-id">ID <b>*</b></label>
+            <input id="student-id" name="studentId" placeholder="e.g. 2026-00124">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="student-name">Name <b>*</b></label>
+            <input id="student-name" name="name" placeholder="Enter full name">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="student-email">Email <b>*</b></label>
+            <input id="student-email" name="email" type="email" placeholder="student@example.edu">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="student-age">Age <b>*</b></label>
+            <input id="student-age" name="age" type="number" min="15" max="100" placeholder="Enter age in years">
+            <small class="field-error"></small>
+          </div>
+        </div>
+        <div class="section-divider"></div>
+        <div class="subsection-title">Academic details</div>
+        <div class="form-grid academic-grid">
+          <div class="field">
+            <label for="student-course">Course <b>*</b></label>
+            <select id="student-course" name="course">
+              <option value="">Select a course</option>
+              <option>BS Computer Science</option>
+              <option>BS Information Technology</option>
+              <option>BS Business Administration</option>
+              <option>BS Accountancy</option>
+            </select>
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="student-year">Year level <b>*</b></label>
+            <select id="student-year" name="year">
+              <option value="">Select year level</option>
+              <option>1st year</option><option>2nd year</option>
+              <option>3rd year</option><option>4th year</option>
+            </select>
+            <small class="field-error"></small>
+          </div>
+        </div>
+        <div class="form-footer">
+          <span class="hint">ⓘ &nbsp;Review the details before enrolling.</span>
+          <div class="button-row">
+            <button type="button" class="btn btn-secondary" id="cancel-enroll">Cancel</button>
+            <button type="submit" class="btn btn-primary">＋ &nbsp;Enroll student</button>
+          </div>
+        </div>
+      </form>
+      <p class="privacy-note">♙ &nbsp;Student information is confidential and accessible only to authorized staff.</p>
+    </section>
+
+    <section class="page" id="page-directory">
+      <div class="page-heading">
+        <div class="breadcrumb">Students <span>›</span> Directory</div>
+        <div class="heading-row">
+          <div>
+            <h1>Student directory</h1>
+            <p>View and manage enrolled students for academic year 2026–2027.</p>
+          </div>
+          <div class="button-row">
+            <button class="btn btn-secondary" id="go-summary">▧ &nbsp;Summary report</button>
+            <button class="btn btn-primary" id="go-enroll">＋ &nbsp;Enroll student</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel directory-panel">
+        <div class="directory-top">
+          <div><strong>All students</strong> <span class="count-pill" id="student-count">1,248 students</span></div>
+          <span class="muted small">Enrolled · 2026–2027</span>
+        </div>
+        <div class="filters">
+          <div class="search-wrap"><span>⌕</span><input id="search-students" placeholder="Search by student ID, name or email"></div>
+          <select id="filter-course" aria-label="Filter by course">
+            <option value="">All courses</option>
+            <option>BS Computer Science</option><option>BS Information Technology</option>
+            <option>BS Business Administration</option><option>BS Accountancy</option>
+          </select>
+          <select id="filter-year" aria-label="Filter by year">
+            <option value="">All year levels</option>
+            <option>1st year</option><option>2nd year</option><option>3rd year</option><option>4th year</option>
+          </select>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Student ID</th><th>Full name ↕</th><th>Email</th><th>Age</th><th>Course</th><th>Year level</th><th>Actions</th></tr></thead>
+            <tbody id="student-rows"></tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span id="showing-count">Showing 1–10 of 1,248 students</span>
+          <div class="pagination">
+            <label>Rows per page
+              <select id="rows-per-page"><option>10</option><option>25</option><option>50</option></select>
+            </label>
+            <button class="page-arrow" id="prev-page" aria-label="Previous page">‹</button>
+            <span class="page-number" id="page-number">1</span>
+            <button class="page-arrow" id="next-page" aria-label="Next page">›</button>
+          </div>
+        </div>
+      </div>
+      <p class="privacy-note">♙ &nbsp;Student information is confidential and accessible only to authorized staff.</p>
+    </section>
+
+    <section class="page" id="page-summary">
+      <div class="page-heading">
+        <div class="breadcrumb">Reports <span>›</span> Enrollment summary</div>
+        <div class="heading-row">
+          <div><h1>Enrollment summary</h1><p>An overview of enrolled students across courses and year levels.</p></div>
+          <div class="button-row">
+            <button class="btn btn-secondary" id="summary-directory">Student directory</button>
+            <button class="btn btn-primary" id="export-report">⇩ &nbsp;Export report</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel report-panel">
+        <div class="report-filters">
+          <span>☷ &nbsp;Report scope</span>
+          <select><option>AY 2026–2027</option></select>
+          <select><option>All courses</option><option>BS Computer Science</option></select>
+          <select><option>All year levels</option><option>1st year</option></select>
+          <span class="as-of">As of 05 Nov 2026</span>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><span>Total enrolled students</span><strong id="stat-total">1,248</strong><small>Academic year 2026–2027</small></article>
+          <article class="stat-card"><span>First-year students</span><strong>384</strong><small>30.8% of total enrollment</small></article>
+          <article class="stat-card"><span>Continuing students</span><strong>864</strong><small>Enrolled in 2nd–4th year</small></article>
+          <article class="stat-card"><span>Courses represented</span><strong>4</strong><small>Across 4 year levels</small></article>
+        </div>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="chart-heading"><strong>Enrollment by course</strong><span>Students</span></div>
+            <div class="bar-row"><span>BS Computer Science</span><div class="bar-track"><i style="width:100%"></i></div><b>384</b><small>30.8%</small></div>
+            <div class="bar-row"><span>BS Information Technology</span><div class="bar-track"><i style="width:87.5%"></i></div><b>336</b><small>26.9%</small></div>
+            <div class="bar-row"><span>BS Business Administration</span><div class="bar-track"><i style="width:75%"></i></div><b>288</b><small>23.1%</small></div>
+            <div class="bar-row"><span>BS Accountancy</span><div class="bar-track"><i style="width:62.5%"></i></div><b>240</b><small>19.2%</small></div>
+            <p class="chart-footnote">Each student is counted once in their assigned course.</p>
+          </div>
+          <div class="chart-card">
+            <div class="chart-heading"><strong>Enrollment by year level</strong><span>1,248 students</span></div>
+            <div class="stacked-bar"><i></i><i></i><i></i><i></i></div>
+            <div class="legend-grid">
+              <div><span class="legend-dot one"></span>1st year<strong>384</strong><small>30.8%</small></div>
+              <div><span class="legend-dot two"></span>2nd year<strong>332</strong><small>26.6%</small></div>
+              <div><span class="legend-dot three"></span>3rd year<strong>292</strong><small>23.4%</small></div>
+              <div><span class="legend-dot four"></span>4th year<strong>240</strong><small>19.2%</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="breakdown">
+          <div class="chart-heading"><strong>Course and year-level breakdown</strong><span>All courses · All year levels</span></div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Course</th><th>1st year</th><th>2nd year</th><th>3rd year</th><th>4th year</th><th>Total</th><th>Share</th></tr></thead>
+              <tbody>
+                <tr><td>BS Computer Science</td><td>120</td><td>104</td><td>88</td><td>72</td><td><b>384</b></td><td>30.8%</td></tr>
+                <tr><td>BS Information Technology</td><td>104</td><td>88</td><td>80</td><td>64</td><td><b>336</b></td><td>26.9%</td></tr>
+                <tr><td>BS Business Administration</td><td>88</td><td>76</td><td>68</td><td>56</td><td><b>288</b></td><td>23.1%</td></tr>
+                <tr><td>BS Accountancy</td><td>72</td><td>64</td><td>56</td><td>48</td><td><b>240</b></td><td>19.2%</td></tr>
+                <tr class="total-row"><td>Total enrollment</td><td>384</td><td>332</td><td>292</td><td>240</td><td>1,248</td><td>100.0%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="chart-footnote">Source: Student directory · One record per enrolled student · Percentages rounded to one decimal place.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop hidden" id="student-modal">
+    <div class="modal">
+      <button class="modal-close" id="close-modal" aria-label="Close">×</button>
+      <h2>Student details</h2>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
